@@ -17,16 +17,16 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
 
 from verl import DataProto
 import torch
-from verl.utils.reward_score import qa_em
+from verl.utils.reward_score import qa_em, request_verify
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 import re
 import numpy as np
 
 def _select_rm_score_fn(data_source):
-    if data_source in ['nq', 'triviaqa', 'popqa', 'hotpotqa', '2wikimultihopqa', 'musique', 'bamboogle']:
+    if data_source in ['triviaqa', 'popqa', 'hotpotqa', '2wikimultihopqa', 'musique', 'bamboogle']:
         return qa_em.compute_score_em
-    if data_source == "1205_test":
-        raise NotImplementedError
+    if data_source == "nq":
+        return request_verify.compute_score
     else:
         raise NotImplementedError
 
@@ -78,7 +78,7 @@ class RewardManager():
             compute_score_fn = _select_rm_score_fn(data_source)
 
             score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, format_score=self.format_score)
-
+            print(f"case: {sequences_str}, {ground_truth}, 计算出的score为: {score}")
             reward_tensor[i, valid_response_length - 1] = score
             # all_scores.append(score)
 

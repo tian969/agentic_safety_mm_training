@@ -53,7 +53,7 @@ if __name__ == '__main__':
     dataset = datasets.load_dataset("json", data_files="/root/paddlejob/workspace/env_run/data/results.jsonl")
 
     train_dataset = dataset['train']
-    test_dataset = dataset['train']
+    test_dataset = train_dataset.select(range(10))
 
     # add a row to each data item that represents a unique id
     def make_map_fn(split):
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     train_dataset = train_dataset.map(function=make_map_fn('train'), with_indices=True)
     test_dataset = test_dataset.map(function=make_map_fn('test'), with_indices=True)
 
-    local_dir = "/root/paddlejob/workspace/env_run/Search-R1/data"
+    local_dir = "/root/paddlejob/workspace/env_run/agentic_safety_mm_training/Search_R1/data"
     hdfs_dir = args.hdfs_dir
 
     train_dataset.to_parquet(os.path.join(local_dir, 'train.parquet'))

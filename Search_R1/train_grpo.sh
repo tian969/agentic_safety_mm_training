@@ -1,8 +1,11 @@
+source /root/miniconda3/bin/activate
+conda activate searchr1
+
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export DATA_DIR='data/nq_search'
 export TRAIN_DATA_DIR=$DATA_DIR
 export TEST_DATA_DIR=$DATA_DIR
-WAND_PROJECT='Search-R1'
+WAND_PROJECT='1207_lab'
 export BASE_MODEL='/root/paddlejob/workspace/env_run/model/Qwen2.5-3B-Instruct'
 export EXPERIMENT_NAME=nq-search-r1-grpo-qwen2.5-3b-em
 
@@ -17,7 +20,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     data.train_data_num=null \
     data.val_data_num=null \
     data.train_batch_size=32 \
-    data.val_batch_size=32 \
+    data.val_batch_size=2 \
     data.max_prompt_length=4096 \
     data.max_response_length=500 \
     data.max_start_length=2048 \
@@ -54,7 +57,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     trainer.n_gpus_per_node=8 \
     trainer.nnodes=1 \
     trainer.save_freq=100 \
-    trainer.test_freq=50 \
+    trainer.test_freq=-1 \
     trainer.project_name=$WAND_PROJECT \
     trainer.experiment_name=$EXPERIMENT_NAME \
     trainer.total_epochs=15 \
