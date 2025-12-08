@@ -15,6 +15,7 @@
 Note that we don't combine the main with ray_trainer as ray_trainer is used by other main.
 """
 
+import inspect  
 from verl import DataProto
 import torch
 from verl.utils.reward_score import qa_em, request_verify
@@ -39,6 +40,7 @@ class RewardManager():
         self.tokenizer = tokenizer
         self.num_examine = num_examine  # the number of batches of decoded responses to print to the console
         self.format_score = format_score
+        self.is_async_reward_score = (self.compute_score)  
 
     def __call__(self, data: DataProto):
         """We will expand this function gradually based on the available datasets"""
@@ -76,9 +78,13 @@ class RewardManager():
             # select rm_score
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
-
-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, format_score=self.format_score)
-            print(f"case: {sequences_str}, {ground_truth}, 计算出的score为: {score}")
+            is_async_reward_score = inspect.iscoroutinefunction(compute_score_fn)  
+            if is_async_reward_score:
+                print("[DEBUG] using async reward score function")
+                score = await compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, format_score=self.format_score)
+            else:
+                score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth)
+            print(f"[DEBUG] case: {sequences_str}, {ground_truth}, 计算出的score为: {score}")
             reward_tensor[i, valid_response_length - 1] = score
             # all_scores.append(score)
 

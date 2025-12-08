@@ -1,7 +1,7 @@
 import asyncio
 import re
-# from openai import AsyncOpenAI
-from openai import OpenAI
+from openai import AsyncOpenAI
+# from openai import OpenAI
 import random
 
 SYSTEM_PROMPT = """
@@ -37,7 +37,7 @@ def extract_solution(solution_str):
     return matches[-1].group(1).strip()
 
 
-def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.19:8199/v1", method='strict', format_score=0., score=1.) -> float:
+async def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.19:8199/v1", method='strict', format_score=0., score=1.) -> float:
     """
     使用 OpenAI 官方异步 SDK 比较 solution_str 和 ground_truth，返回一个分数。
     """
@@ -45,14 +45,14 @@ def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.1
     golden_answer_str = ground_truth['target']
 
     # 初始化客户端
-    client = OpenAI(
+    client = AsyncOpenAI(
         api_key="",
         base_url=base_url
     )
 
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": f"Ground Truth: {golden_answer_str}\nSolution: {extract_solution_str}\n你的输出:"}
+        {"role": "user", "content": f"Ground Truth: {golden_answer_str}\nSolution: {extract_solution_str}\n你的输出:\n"}
     ]
     print(f"Ground Truth: {golden_answer_str}\nSolution: {extract_solution_str}\n")
     # do_print = random.randint(1, 64) == 1
@@ -64,7 +64,7 @@ def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.1
     #     print(f"Solution string: {solution_str}")
 
     try:
-        response = client.chat.completions.create(
+        response = await client.chat.completions.create(
             model="qwen",
             messages=messages,
             max_tokens=15,
@@ -87,6 +87,7 @@ def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.1
         elif "否" in reply:
             return 0.0
         else:
+            print(f"模型胡言乱语, 没辙了: {reply}")
             return 0.0
             
     except Exception as e:
