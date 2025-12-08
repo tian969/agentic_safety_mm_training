@@ -1,7 +1,7 @@
-import asyncio
+# import asyncio
 import re
-from openai import AsyncOpenAI
-# from openai import OpenAI
+# from openai import AsyncOpenAI
+from openai import OpenAI
 import random
 
 SYSTEM_PROMPT = """
@@ -37,7 +37,7 @@ def extract_solution(solution_str):
     return matches[-1].group(1).strip()
 
 
-async def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.19:8199/v1", method='strict', format_score=0., score=1.) -> float:
+def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.19:8199/v1", method='strict', format_score=0., score=1.) -> float:
     """
     使用 OpenAI 官方异步 SDK 比较 solution_str 和 ground_truth，返回一个分数。
     """
@@ -45,7 +45,7 @@ async def compute_score(solution_str, ground_truth, base_url: str = "http://10.5
     golden_answer_str = ground_truth['target']
 
     # 初始化客户端
-    client = AsyncOpenAI(
+    client = OpenAI(
         api_key="",
         base_url=base_url
     )
@@ -64,7 +64,7 @@ async def compute_score(solution_str, ground_truth, base_url: str = "http://10.5
     #     print(f"Solution string: {solution_str}")
 
     try:
-        response = await client.chat.completions.create(
+        response = client.chat.completions.create(
             model="qwen",
             messages=messages,
             max_tokens=15,

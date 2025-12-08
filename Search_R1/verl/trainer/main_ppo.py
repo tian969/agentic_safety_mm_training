@@ -27,6 +27,7 @@ def _select_rm_score_fn(data_source):
     if data_source in ['triviaqa', 'popqa', 'hotpotqa', '2wikimultihopqa', 'musique', 'bamboogle']:
         return qa_em.compute_score_em
     if data_source == "nq":
+        print("返回的是异步函数!")
         return request_verify.compute_score
     else:
         raise NotImplementedError
@@ -40,9 +41,8 @@ class RewardManager():
         self.tokenizer = tokenizer
         self.num_examine = num_examine  # the number of batches of decoded responses to print to the console
         self.format_score = format_score
-        self.is_async_reward_score = (self.compute_score)  
 
-    def __call__(self, data: DataProto):
+    async def __call__(self, data: DataProto):
         """We will expand this function gradually based on the available datasets"""
 
         # If there is rm score, we directly return rm score. Otherwise, we compute via rm_score_fn
