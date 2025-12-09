@@ -27,7 +27,6 @@ def _select_rm_score_fn(data_source):
     if data_source in ['triviaqa', 'popqa', 'hotpotqa', '2wikimultihopqa', 'musique', 'bamboogle']:
         return qa_em.compute_score_em
     if data_source == "nq":
-        print("返回的是异步函数!")
         return request_verify.compute_score
     else:
         raise NotImplementedError
@@ -79,7 +78,7 @@ class RewardManager():
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
             score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, format_score=self.format_score)
-            print(f"[DEBUG] case: {sequences_str}, {ground_truth}, 计算出的score为: {score}")
+            # print(f"[DEBUG] case: {sequences_str}, {ground_truth}, 计算出的score为: {score}")
             reward_tensor[i, valid_response_length - 1] = score
             # all_scores.append(score)
 

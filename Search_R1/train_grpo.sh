@@ -7,7 +7,7 @@ export TRAIN_DATA_DIR=$DATA_DIR
 export TEST_DATA_DIR=$DATA_DIR
 WAND_PROJECT='1207_lab'
 export BASE_MODEL='/root/paddlejob/workspace/env_run/model/Qwen2.5-3B-Instruct'
-export EXPERIMENT_NAME=nq-search-r1-grpo-qwen2.5-3b-em
+export EXPERIMENT_NAME=1208_test
 
 # set -x
 export VLLM_ATTENTION_BACKEND=XFORMERS # vllm + qwen2-7b with flash_attn has some issues
@@ -19,12 +19,12 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     data.val_files=$TEST_DATA_DIR/test.parquet \
     data.train_data_num=null \
     data.val_data_num=null \
-    data.train_batch_size=32 \
+    data.train_batch_size=64 \
     data.val_batch_size=2 \
     data.max_prompt_length=4096 \
     data.max_response_length=500 \
     data.max_start_length=2048 \
-    data.max_obs_length=500 \
+    data.max_obs_length=1024 \
     data.shuffle_train_dataloader=True \
     algorithm.adv_estimator=grpo \
     actor_rollout_ref.model.path=$BASE_MODEL \

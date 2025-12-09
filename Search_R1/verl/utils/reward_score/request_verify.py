@@ -4,13 +4,14 @@ import re
 from openai import OpenAI
 import random
 
-SYSTEM_PROMPT = """
-你是一个答案验证器, 下面我会给出Ground Truth和Solution, 请判断答案和回复是否相符, 二者可能存在格式或表述的不一致.
+PRE_PROMPT = """
+你是一个答案验证器, 我会给出Ground Truth和Solution, 请判断答案和回复是否相符, 二者可能存在格式或表述的不一致.
 请只输出是或者否来判断是否匹配, 下面是一个例子:
 Ground Truth: 12
 Solution: 答案是24
 你的输出:
 <res>否</res>
+下面请参考以上格式进行判断:
 """
 
 def extract_solution(solution_str):
@@ -51,10 +52,12 @@ def compute_score(solution_str, ground_truth, base_url: str = "http://10.52.99.1
     )
 
     messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": f"Ground Truth: {golden_answer_str}\nSolution: {extract_solution_str}\n你的输出:\n"}
+        {"role": "user", "content": PRE_PROMPT + f"Ground Truth: {golden_answer_str}\nSolution: {extract_solution_str}\n你的输出:\n"}
     ]
-    print(f"Ground Truth: {golden_answer_str}\nSolution: {extract_solution_str}\n")
+    print("请求的message为: = = == = = = = = = = = = = = = ")
+    print(messages)
+    print("结束 = = = = = = = = = = = = = = = = = = = = = =")
+
     # do_print = random.randint(1, 64) == 1
     
     # if do_print:

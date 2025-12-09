@@ -7,7 +7,7 @@ import hashlib
 import datetime
 import json
 import asyncio
-import aiohttp  # 需要安装: pip install aiohttp
+import aiohttp
 
 # --- 配置部分 ---
 AURORA_URL = "http://10.138.162.80:8820/baizhong/eb118/multi-search"

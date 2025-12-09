@@ -458,15 +458,16 @@ If I want to give the final answer, I should put the answer between <answer> and
         return requests.post(self.config.search_url, json=payload).json()
 
     def _passages2string(self, retrieval_result):
-        # print("召回的文档结果为: ", retrieval_result, " = = = = = = = = = = ")
+        print("召回的文档结果为: ", retrieval_result)
+        print( " = = = = = = = = = = ")
         format_reference = ''
         for idx, doc_item in enumerate(retrieval_result):
             
-            # content = doc_item['document']['contents']
-            # title = content.split("\n")[0]
-            # text = "\n".join(content.split("\n")[1:])
-            # format_reference += f"Doc {idx+1}(Title: {title}) {text}\n"
-            content = doc_item['document']['text']
-            format_reference += f"Doc {idx+1} {content}"
+            content = doc_item['document']['contents']
+            title = content.split("\n")[0]
+            text = "\n".join(content.split("\n")[1:])
+            format_reference += f"Doc {idx+1}(Title: {title}) {text}\n"
+            # content = doc_item['document']['text']
+            # format_reference += f"Doc {idx+1} {content}"
 
         return format_reference
