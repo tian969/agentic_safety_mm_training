@@ -458,8 +458,8 @@ If I want to give the final answer, I should put the answer between <answer> and
         return requests.post(self.config.search_url, json=payload).json()
 
     def _passages2string(self, retrieval_result):
-        print("召回的文档结果为: ", retrieval_result)
-        print( " = = = = = = = = = = ")
+        # print("召回的文档结果为: ", retrieval_result)
+        # print( " = = = = = = = = = = ")
         format_reference = ''
         for idx, doc_item in enumerate(retrieval_result):
             

@@ -50,10 +50,16 @@ if __name__ == '__main__':
 
     data_source = 'nq'
 
-    dataset = datasets.load_dataset("json", data_files="/root/paddlejob/workspace/env_run/data/results.jsonl")
+    dataset = datasets.load_dataset("json", data_files="/root/paddlejob/workspace/env_run/data/results_1_filtered.jsonl")
 
-    train_dataset = dataset['train']
-    test_dataset = train_dataset.select(range(10))
+    split_dataset = dataset['train'].train_test_split(
+    test_size=50,  # 验证集大小
+    seed=42,        # 随机种子，保证可复现性
+    shuffle=True    # 是否打乱数据
+    )
+    train_dataset = split_dataset['train']
+    test_dataset =  split_dataset['test']
+    print(f"分割之后数据规模: train: {len(train_dataset)}, {len(test_dataset)}")
 
     # add a row to each data item that represents a unique id
     def make_map_fn(split):
